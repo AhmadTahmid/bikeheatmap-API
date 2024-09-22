@@ -27,19 +27,36 @@ function fetchData() {
 function processData(records) {
     records.forEach(record => {
         var fields = record.fields;
+
+        // Check if 'data' field exists
+        if (!fields.data) {
+            console.warn('Missing data field for record:', record);
+            return; // Skip this record
+        }
+
         var date = new Date(fields.data);
+        if (isNaN(date.getTime())) {
+            console.warn('Invalid date for record:', record);
+            return; // Skip this record
+        }
         var hour = date.getHours();
-        var coords = fields.position; // [latitude, longitude]
+
+        var coords = fields.geo_point_2d; // Updated to use 'geo_point_2d'
         var count = fields.totale || 1; // Default to 1 if 'totale' is missing
 
         if (!bikeData[hour]) {
             bikeData[hour] = [];
         }
 
-        // Push data in the format [lat, lon, intensity]
-        bikeData[hour].push([coords[0], coords[1], count]);
+        if (coords && coords.length >= 2) {
+            // Push data in the format [lat, lon, intensity]
+            bikeData[hour].push([coords[0], coords[1], count]);
+        } else {
+            console.warn('Missing coordinates for record:', record);
+        }
     });
 }
+
 
 // Update the heatmap based on the selected hour
 function updateHeatmap(hour) {
