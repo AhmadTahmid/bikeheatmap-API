@@ -1,0 +1,16 @@
+/* style.css */
+body {
+    margin: 0;
+    padding: 0;
+}
+#map {
+    height: 90vh;
+}
+#slider-container {
+    margin: 10px;
+    text-align: center;
+}
+#time-display {
+    font-size: 1.2em;
+    margin-top: 5px;
+}
